@@ -19,17 +19,20 @@ To reproduce the results, the raw data has to be put in specific folders.
 1. Create a folder named **data**.
 2. Inside **data**, place the specific raw data folders:
 
-`**REF_raw_data101_110**`
-
-`**RIF10_raw_data201_210**`
+* `**REF_raw_data101_110**`
+* `**RIF10_raw_data201_210**`
 
 ### Directory Structure:
+
+```text
 .
-├── analysis_comparison.py
-├── vector_viz.py
-├── data/
-│   ├── REF_raw_data101_110/   # (Contains .tiff images)
-│   └── RIF10_raw_data201_210/ # (Contains .tiff images)
+├── analysis_comparison.py     # Quantitative analysis script
+├── vector_viz.py              # Qualitative visualization script
+├── requirements.txt           # Dependencies
+└── data/
+    ├── REF_raw_data101_110/   # Untreated images
+    └── RIF10_raw_data201_210/ # Treated images
+```
 
 ## 3. How to Run
 ### Method 1: Quantitative Analysis
