@@ -19,8 +19,8 @@ To reproduce the results, the raw data has to be put in specific folders.
 1. Create a folder named **data**.
 2. Inside **data**, place the specific raw data folders:
 
-* `**REF_raw_data101_110**`
-* `**RIF10_raw_data201_210**`
+* `REF_raw_data101_110`
+* `RIF10_raw_data201_210`
 
 ### Directory Structure:
 
