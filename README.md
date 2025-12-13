@@ -1,5 +1,10 @@
 # Research Methodology: Bacterial Growth Optical Flow Analysis
 
+## Quick Start (Easiest Way)
+Use this Google Colab notebook to run the analysis immediately without manual setup.
+* **[Click Here to Run in Colab](<https://colab.research.google.com/drive/1ofS54sy6byKLzyMebWKhkJZSdZEIbDef?usp=sharing>)**
+* *Note: This notebook automatically clones the code and downloads the data from a public Google Drive link. No manual file uploads are required.*
+
 ## 1. Overview
 This project analyzes the **Net Optical Flow** of bacterial colony growth. It compares untreated bacterial samples (REF) against those treated with Rifampicin (RIF) to detect growth anomalies and points of divergence.
 
