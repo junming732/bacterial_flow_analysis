@@ -1,3 +1,5 @@
 flow_env
 results_*
+!results_comparison.png
+!results_viz/
 data/
