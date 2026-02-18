@@ -1,66 +1,78 @@
 # Research Methodology: Bacterial Growth Optical Flow Analysis
 
-## Quick Start (Easiest Way)
-Use this Google Colab notebook to run the analysis immediately without manual setup.
-* **[Click Here to Run in Colab](<https://colab.research.google.com/drive/1ofS54sy6byKLzyMebWKhkJZSdZEIbDef?usp=sharing>)**
-* *Note: This notebook automatically clones the code and downloads the data from a public Google Drive link. No manual file uploads are required.*
+## 1. Project Overview
+This repository hosts a high-throughput computer vision pipeline designed to quantify bacterial phenotypic responses to antibiotic stress. By replacing computationally expensive deep learning segmentation (O(N)) with dense optical flow estimation (O(1)), this system provides a lightweight, real-time kinetic proxy for bacterial mortality.
 
-## 1. Overview
-This project analyzes the **Net Optical Flow** of bacterial colony growth. It compares untreated bacterial samples (REF) against those treated with Rifampicin (RIF) to detect growth anomalies and points of divergence.
+The pipeline utilizes **Farneback’s algorithm** to compute dense vector fields, applying **statistical outlier rejection** to isolate biological motility from stochastic sensor noise. It successfully identifies the "Point of Divergence" between Rifampicin-treated (RIF) and Control (REF), offering a computationally efficient, zero-latency alternative to traditional biomass area integration methods.
 
-The repository contains two methods:
-1.  **`analysis_comparison.py`**: A quantitative script that plots the net flow direction over time and highlights statistical divergence.
-2.  **`vector_viz.py`**: A qualitative visualization script that generates heatmap videos/images with vector arrows to show flow dynamics.
+### Key Engineering Features
+* **Computer Vision:** Dense optical flow estimation (Farneback) with spatial smoothing kernels to track coherent colony expansion.
+* **Signal Processing:** Double-threshold filtering (Bottom 50% / Top 5%) to eliminate Brownian motion noise and camera artifacts.
+* **Event Detection:** Automated temporal gating to identify pharmacological injection events ("fluid dynamic perturbations") and exclude them from growth metrics.
 
-## 2. Setup Instructions
-
-### Dependencies
-Install the required Python libraries:
-```bash
-pip install -r requirements.txt
-```
-### Data Preparation
-To reproduce the results, the raw data has to be put in specific folders.
-1. Create a folder named **data**.
-2. Inside **data**, place the specific raw data folders:
-
-* `REF_raw_data101_110`
-* `RIF10_raw_data201_210`
-
-### Directory Structure:
+## 2. Directory Structure
+The codebase is organized into a modular package structure to separate business logic from execution scripts.
 
 ```text
 .
-├── analysis_comparison.py     # Quantitative analysis script
-├── vector_viz.py              # Qualitative visualization script
-├── requirements.txt           # Dependencies
-└── data/
-    ├── REF_raw_data101_110/   # Untreated images
-    └── RIF10_raw_data201_210/ # Treated images
+├── data/                          # Raw experimental image stacks
+│   ├── REF_raw_data101_110/       # Control Group (Untreated)
+│   └── RIF10_raw_data201_210/     # Experimental Group (Treated)
+├── results/                       # Generated plots and time-series data
+├── src/                           # Source Code
+│   ├── optical_flow_pipeline.py   # Main differential analysis engine
+│   ├── injection_event_detector.py# Temporal perturbation monitor
+│   └── vector_field_visualizer.py # Qualitative heatmap generator
+├── requirements.txt               # Dependencies
+└── README.md
 ```
 
-## 3. How to Run
-### Method 1: Quantitative Analysis
-Run the comparison script to generate time-series plots:
+## 3. Setup & Installation
+### Dependencies
+Install the required Python libraries:
 
 ```bash
-python analysis_comparison.py
+pip install -r requirements.txt
 ```
 Output: Generates results_comparison.png, showing the net flow difference between REF and RIF and marking the exact frame where behavior diverges.
 
-### Method 2: Qualitative Visualization
-Run the visualization script to generate vector fields:
+### Data Preparation
+Ensure raw data is placed in the `data/` directory as shown in the structure above.
+
+## 4. Usage Instructions
+
+### Method 1: Quantitative Differential Analysis
+
+Executes the core pipeline to generate kinetic time-series comparisons and statistical divergence plots.
 
 ```bash
-python vector_viz.py
+python src/optical_flow_pipeline.py
 ```
-Output: Creates a results_viz/ folder containing heatmaps (e.g., viz_RIF_frame030.png) showing the direction and magnitude of bacterial movement at specific timepoints.
+**Output**: Generates `results/results_comparison.png`, visualizing the net flow difference and statistically identifying the onset of necrotic cessation.
 
-## 4. Expected Results & Interpretation
+### Method 2: Injection Event Detection
+
+Analyzes temporal vector magnitude spikes to pinpoint the exact frame of compound administration.
+
+```bash
+python python src/injection_event_detector.py
+```
+**Output**: Generates a temporal profile identifying the "Injection Window" (fluid perturbation artifact) to ensure downstream data integrity.
+
+### Method 3: Vector Field Visualization
+
+Generates optical vector filed to visually verify flow dynamics and directional bias.
+
+```bash
+python python src/vector_field_visualizer.py
+```
+**Output**: Generates `results/results_comparison.png`, visualizing the net flow difference and statistically identifying the onset of necrotic cessation.
+
+## 5. Interpretation of Results
 
 The results from this method are subtle. The antibiotic effect does not cause the bacteria to immediately disappear; rather, it biases their movement direction.
 
-### A. Quantitative Analysis (`results_comparison.png`)
+### A. Quantitative Analysis (`results/results_comparison.png`)
 This image contains 5 panels. Here is how to read them:
 
 1.  **Horizontal Flow (Top Panel):**
@@ -82,7 +94,7 @@ This image contains 5 panels. Here is how to read them:
 5.  **Statistical Summary (Bottom Right):**
     * Provides the global averages. If `RIF10 Avg Horizontal` is higher than REF, it confirms the rightward directional bias quantitatively.
 
-### B. Qualitative Visualization (`results_viz/`)
+### B. Qualitative Visualization (`results/`)
 * **Files:** Images like `viz_RIF_frame030.png`.
 * **Interpretation:** Do not look for a difference in the "size" or "area" of the colony, as both grow initially.
 * **What to look for:** Look at the **arrows (Vectors)**.
